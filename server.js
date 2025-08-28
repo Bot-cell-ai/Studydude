@@ -1,24 +1,23 @@
 import express from "express";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
 import cors from "cors";
+import dotenv from "dotenv";
+import fetch from "node-fetch";
 
 dotenv.config();
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 👇 Add this
 app.get("/", (req, res) => {
   res.send("✅ AI backend is running. Use POST / to talk to the AI.");
 });
 
-// AI endpoint
 app.post("/", async (req, res) => {
   try {
     const prompt = req.body.prompt;
 
-    const geminiRes = await fetch(
+    const response = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + process.env.GEMINI_API_KEY,
       {
         method: "POST",
@@ -29,14 +28,17 @@ app.post("/", async (req, res) => {
       }
     );
 
-    const data = await geminiRes.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+    const data = await response.json();
 
-    res.json({ text });
+    // ✅ Extract the text safely
+    const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response from AI";
+
+    res.json({ text: aiText });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ text: "Error connecting to Gemini API" });
+    res.status(500).json({ text: "Error contacting AI" });
   }
 });
 
-app.listen(10000, () => console.log("✅ Server running on port 10000"));
+const port = process.env.PORT || 10000;
+app.listen(port, () => console.log(`✅ Server running on port ${port}`));
