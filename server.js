@@ -70,7 +70,23 @@ app.post("/api/chat", async (req, res) => {
       role: entry.sender === 'user' ? 'user' : 'model',
       parts: [{ text: entry.content }]
     }));
-    contents.push({ role: 'user', parts: [{ text: `Regarding "${topic}", ${message}` }] }); // Add current message with topic context
+    
+    // Add current message with topic context and style instructions
+    contents.push({
+      role: "user",
+      parts: [{
+        text: `You are an AI tutor. 
+Answer in a style similar to ChatGPT:
+- Write clear, natural sentences.
+- Use short paragraphs and bullet points where helpful.
+- Highlight important terms in **bold**.
+- Keep answers concise (max 6–8 sentences unless user asks for more).
+- Tone: professional but friendly for students.
+
+Topic: ${topic}
+User Question: ${message}`
+      }]
+    });
 
     const response = await fetch(geminiUrl, {
       method: "POST",
