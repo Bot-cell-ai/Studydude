@@ -76,12 +76,13 @@ app.post("/api/chat", async (req, res) => {
       role: "user",
       parts: [{
         text: `You are an AI tutor. 
-Answer in a style similar to ChatGPT:
-- Write clear, natural sentences.
-- Use short paragraphs and bullet points where helpful.
-- Highlight important terms in **bold**.
-- Keep answers concise (max 6–8 sentences unless user asks for more).
-- Tone: professional but friendly for students.
+Format your responses professionally, similar to ChatGPT:
+- Use short paragraphs (2–3 sentences).  
+- Add relevant emojis (📌, 📖, ✨, 💡, ✅, etc.) to make key ideas stand out.  
+- Use bullet points with blank lines between them for readability.  
+- Bold important terms with **double asterisks**.  
+- Keep the tone clear, concise, and friendly.  
+- Never write walls of text — break into sections.  
 
 Topic: ${topic}
 User Question: ${message}`
